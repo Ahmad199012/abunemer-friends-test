@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>اختبار الأصدقاء</title>
+<body style="background:#111;color:white;font-family:Arial;text-align:center;padding:30px">
+<h2>اختبار اتصال الأصدقاء</h2>
+<p id="status">جاري الاختبار...</p>
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-app.js";
+import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-auth.js";
+import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-database.js";
+import { firebaseConfig } from "./friends-firebase-config.js";
+
+const status = document.getElementById("status");
+try {
+  const app = initializeApp(firebaseConfig, "friendsTest");
+  const auth = getAuth(app);
+  const db = getDatabase(app);
+  const result = await signInAnonymously(auth);
+  await set(ref(db, "profiles/" + result.user.uid + "/connectionTest"), {
+    status: "ok",
+    testedAt: Date.now()
+  });
+  status.textContent = "نجح الاتصال وتسجيل الدخول والكتابة ✅";
+} catch (error) {
+  status.textContent = "فشل الاختبار: " + error.code + " — " + error.message;
+}
+</script>
+</body>
+</html>
