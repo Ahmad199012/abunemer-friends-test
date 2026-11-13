@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>    
+    <meta charset="UTF-8">    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">    
+    <title>أبو نمر والسبع الحلبي</title>    
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">    
+    <style>    
+        :root {    
+            --bg-dark: #000000; --bg-panel: #030406;     
+            --gold: #ffc800; --success: #00ff88; --danger: #ff003c; --warning: #ffaa00; --cyan: #00f0ff;    
+            --purple: #9d00ff; --text-main: #e2e8f0; --text-muted: #5a667a; --border: #0a0d14;     
+            --ai-core: #ff00ea; --chaos: #ff3300;
+        }    
+        body { background-color: var(--bg-dark); color: var(--text-main); font-family: 'Tajawal', sans-serif; margin: 0; padding: 0; height: 100vh; overflow: hidden; display: flex; flex-direction: column; }  
+        
+        .disclaimer-bar { background-color: #010102; color: var(--success); text-align: center; padding: 6px; font-size: 13px; font-weight: 900; letter-spacing: 1px; z-index: 100; border-bottom: 1px solid #003311; }
+        .disclaimer-bar span { color: #5a667a; font-weight: 400; font-size: 11px;}
+
+        #main-app { display: flex; flex-direction: column; height: 100%; padding: 12px; box-sizing: border-box; overflow-y: auto; }    
+        .header { background: #020203; border: 1px solid var(--border); padding: 15px; border-radius: 8px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; flex-wrap: wrap; gap: 10px; box-shadow: 0 5px 25px rgba(0,0,0, 0.9); }    
+        .header h1 { margin: 0; font-size: 16px; color: var(--text-main); display: flex; align-items: center; gap: 10px; text-transform: uppercase; letter-spacing: 2px; font-weight: 900;}    
+        .header h1 i { color: var(--chaos); text-shadow: 0 0 15px var(--chaos); }
+        .stats-bar { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; }    
+        .stat-box { background: #050608; border: 1px solid var(--border); padding: 10px 15px; border-radius: 6px; font-weight: bold; font-size: 11px; text-align: center; min-width: 130px; flex: 1; border-top: 2px solid var(--border); transition: all 0.3s;}    
+        .stat-box span { display: block; font-size: 16px; margin-top: 6px; color: #fff; font-family: monospace; direction: ltr;}    
+            
+        .controls-panel { background: #050608; border: 1px solid var(--border); border-radius: 8px; padding: 15px; margin-bottom: 10px; position: relative;}    
+        .controls-header { color: var(--text-muted); font-size: 13px; font-weight: bold; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; }    
+            
+        .quantum-stats { display: flex; gap: 10px; font-size: 11px; color: #888; flex-wrap: wrap; }    
+        .q-stat { background: #000; border: 1px solid var(--border); padding: 12px; border-radius: 6px; flex: 1; min-width: 120px; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; overflow: hidden;}    
+        .q-val { font-weight: 900; font-size: 14px; font-family: monospace; margin-top: 8px; text-align: center; }    
+            
+        .main-grid { display: grid; grid-template-columns: 1.2fr 1fr 420px; gap: 10px; flex: 1; min-height: 0; }    
+        .panel { background: var(--bg-panel); border: 1px solid var(--border); border-radius: 8px; display: flex; flex-direction: column; overflow: hidden; box-shadow: inset 0 0 20px rgba(0,0,0,0.8); }    
+        .panel-header { background: #000; padding: 15px; border-bottom: 1px solid var(--border); font-weight: bold; font-size: 12px; color: var(--text-main); display: flex; justify-content: space-between; align-items: center;}    
+            
+        .table-responsive { overflow-y: auto; flex: 1; padding: 5px; }    
+        table { width: 100%; border-collapse: collapse; text-align: right; min-width: 400px; }    
+        th { background: #000; position: sticky; top: 0; padding: 12px 10px; color: var(--text-muted); font-size: 10px; border-bottom: 1px solid var(--border); z-index: 2;}    
+        td { padding: 12px 10px; border-bottom: 1px solid #06080c; font-size: 11px; font-weight: bold; }    
+            
+        .text-green { color: var(--success) !important; } .text-red { color: var(--danger) !important; } .text-cyan { color: var(--cyan) !important; } .text-gold { color: var(--gold) !important; } .text-purple { color: var(--purple) !important; } .text-warning { color: var(--warning) !important; } .text-ai { color: var(--ai-core) !important; text-shadow: 0 0 10px rgba(255,0,234,0.5); }
+        .usd-val { color: var(--success); font-size: 10px; margin-right: 5px; background: rgba(0, 255, 136, 0.05); padding: 3px 6px; border-radius: 4px; font-family: monospace; border: 1px solid rgba(0,255,136,0.1);}    
+            
+        .console { background: #000; color: #a0aec0; font-family: 'Courier New', monospace; font-size: 10px; padding: 15px; overflow-y: auto; line-height: 1.8; border: 1px solid var(--border); }    
+        .log-entry { margin-bottom: 6px; padding-bottom: 6px; border-bottom: 1px dashed #0a0d14; word-wrap: break-word;}    
+        .log-time { color: #5a667a; font-size: 9px; margin-left: 5px; }    
+        .log-calc { color: var(--ghost); } .log-ai { color: var(--ai-core); font-weight: bold; } .log-strike { color: var(--success); font-weight:bold; } .log-kill { color: var(--danger); font-weight:bold;} .log-sys { color: var(--cyan);} .log-chaos { color: var(--chaos); font-weight:bold;}
+    </style>
+</head>    
+<body>  
+
+<div class="disclaimer-bar">
+    <i class="fas fa-gamepad"></i> هذه اللعبة هي محاكاة مجانية ترفيهية فقط <span>(محرك V31.0 - يعتمد على عشوائية نقية تعاكس التوقعات بشكل تام. الإستمرار حتماً يؤدي للخسارة)</span>
+</div>
+
+<div id="main-app">    
+    <div class="header">    
+        <h1><i class="fas fa-hurricane"></i> 👑 أبو نمر والسبع الحلبي 🦁</h1>    
+        <div class="stats-bar">    
+            <div class="stat-box" style="border-top-color:var(--text-muted)">قيمة العملة المادية <span class="text-cyan">100C = 1.50$</span></div>    
+            <div class="stat-box" style="border-top-color:var(--text-muted)">إجمالي الجولات المكتملة <span id="cycle-rounds" class="text-warning">0</span></div>    
+            <div class="stat-box" style="border-top-color:#fff">توقيت المعالجة <span id="round-id">--</span> (<span id="round-time">--</span>)</div>    
+            <div class="stat-box" style="border-top-color:var(--danger)">صافي ربح السيرفر <span id="cycle-profit" class="text-red">0</span></div>    
+        </div>    
+    </div>    
+    
+    
+<div style="text-align:center;background:#050608;border:1px solid #168b48;border-radius:10px;padding:14px;margin:10px 0;">
+  <div style="color:#ffc800;font-size:19px;font-weight:900;">👑 أبو نمر الحلبي - السبع الحلبي 🦁</div>
+  <a href="https://wa.me/905317327802" target="_blank" rel="noopener"
+     style="display:inline-block;background:#20c765;color:white;text-decoration:none;padding:12px 22px;border-radius:8px;font-weight:900;margin-top:10px;">
+    <i class="fab fa-whatsapp"></i> تواصل عبر واتساب
+    <div dir="ltr">05317327802</div>
+  </a>
+</div>
+
+<div class="controls-panel">    
+        <div class="controls-header">    
+            <span style="color:var(--chaos);"><i class="fas fa-mask"></i> نظام عكس التوقعات (Anti-Expectation AI): تدمير توقعات الأغلبية، وتدمير اللاعبين المعاكسين للقطيع. عشوائية قاضية تحسم مصير الجميع.</span>    
+        </div>    
+        <div class="quantum-stats">    
+            <div class="q-stat">السيولة الحية للطاولة <span id="live-total-bet" class="q-val text-gold">0</span></div>    
+            <div class="q-stat" style="border-color:var(--chaos);">مؤشر كسر التوقعات <span id="ai-status" class="q-val text-chaos">يحلل سلوك الطاولة</span></div>    
+        </div>    
+    </div>    
+
+    <div class="main-grid">    
+        <div class="panel" style="grid-column: 1 / 2;">    
+            <div class="panel-header"><span><i class="fas fa-users"></i> إحصائيات اللاعبين (ترفيه محاكاة)</span></div>    
+            <div class="table-responsive">    
+                <table>    
+                    <thead><tr><th>اللاعب</th><th>الرصيد الحي (C)</th><th>الربح/الخسارة (مصير حتمي)</th></tr></thead>    
+                    <tbody id="players-table-body"></tbody>    
+                </table>    
+            </div>    
+        </div>    
+
+        <div class="panel" style="grid-column: 2 / 3;">    
+            <div class="panel-header"><span><i class="fas fa-radar"></i> رادار الطاولة المباشرة</span></div>    
+            <div class="table-responsive" id="live-bets-container" style="padding: 10px;">    
+                <div style="text-align: center; color: var(--text-muted); margin-top: 20px;">انتظار ضخ الأموال...</div>    
+            </div>    
+        </div>    
+
+        <div class="panel console" id="console-log" style="grid-column: 3 / 4;">    
+            <div class="log-entry"><span class="log-sys">[SYSTEM_BOOT] أبو نمر والسبع الحلبي - وضع المحاكاة مفعل.</span></div>    
+            <div class="log-entry"><span class="log-chaos">[ANTI-EXP] نظام تدمير التوقعات قيد العمل. القطيع والمعاكسون سيخسرون أمام العشوائية النقية.</span></div>    
+        </div>    
+    </div>
+</div>  
+
+<script type="module">    
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-app.js";    
+    import { getDatabase, ref, update, onValue, runTransaction } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-database.js";    
+    
+    const firebaseConfig = { apiKey: "AIzaSyBDwcM8WKOpj-oHIomuh-NisTC5bVqR2Kk", authDomain: "mgane-3cbd4.firebaseapp.com", databaseURL: "https://mgane-3cbd4-default-rtdb.firebaseio.com", projectId: "mgane-3cbd4" };    
+    const app = initializeApp(firebaseConfig);     
+    const db = getDatabase(app);    
+    
+    const itemsData = [    
+        { index: 0, id: 1, country: "إنجلترا", mult: 3 },    
+        { index: 1, id: 2, country: "إسبانيا", mult: 10 },    
+        { index: 2, id: 3, country: "ألمانيا", mult: 6 },    
+        { index: 3, id: 4, country: "فرنسا", mult: 3 },    
+        { index: 4, id: 5, country: "التشيك", mult: 200 },    
+        { index: 5, id: 6, country: "إيطاليا", mult: 40 },    
+        { index: 6, id: 7, country: "البرتغال", mult: 20 },    
+        { index: 7, id: 8, country: "تركيا", mult: 100 }
+    ];    
+    
+    const COIN_TO_USD = 0.015; 
+    
+    // ============================================================================    
+    // V31.0 - Anti-Expectation & Chaos Engine (عكس التوقعات والعشوائية التامة)
+    // ============================================================================    
+    window.QUANTUM_ENGINE = {
+        baseData: [
+            { index: 0, mult: 3,   weight: 33500 }, 
+            { index: 1, mult: 10,  weight: 9800  }, 
+            { index: 2, mult: 6,   weight: 16800 }, 
+            { index: 3, mult: 3,   weight: 33500 }, 
+            { index: 4, mult: 200, weight: 150   }, 
+            { index: 5, mult: 40,  weight: 2200  }, 
+            { index: 6, mult: 20,  weight: 3800  }, 
+            { index: 7, mult: 100, weight: 320   }  
+        ],
+
+        getSecureRandom: function() {
+            let buffer = new Uint32Array(1);
+            window.crypto.getRandomValues(buffer);
+            return buffer[0] / (0xFFFFFFFF + 1);
+        },
+
+        processRound: function(roundPlayersSnapshot) {
+            let totalLiveBet = 0;
+            let totalPlayersCount = 0;
+            let itemLiabilities = [0,0,0,0,0,0,0,0];
+            let itemPlayerCounts = [0,0,0,0,0,0,0,0];
+
+            // 1. حساب الكثافة (أموال + عدد اللاعبين) لكل خانة
+            for (let devId in roundPlayersSnapshot) {
+                let pData = roundPlayersSnapshot[devId];
+                if (!pData || !pData.bets) continue;
+                
+                let hasBet = false;
+                for(let i=0; i<8; i++) {
+                    let betAmt = pData.bets[i] || 0;
+                    if(betAmt > 0) {
+                        itemLiabilities[i] += betAmt * itemsData[i].mult;
+                        itemPlayerCounts[i]++;
+                        totalLiveBet += betAmt;
+                        hasBet = true;
+                    }
+                }
+                if(hasBet) totalPlayersCount++;
+            }
+
+            let dynamicWeights = [];
+            let totalWeight = 0;
+            let statusMsg = "عشوائية نقية مدمجة";
+            let logType = "sys";
+
+            // 2. تطبيق خوارزمية عكس التوقعات (Anti-Expectation)
+            for (let item of this.baseData) {
+                let w = item.weight;
+
+                if (totalLiveBet > 0 && totalPlayersCount > 0) {
+                    let moneyRatio = itemLiabilities[item.index] / (totalLiveBet * 2); // نسبة الخطر المالي
+                    let crowdRatio = itemPlayerCounts[item.index] / totalPlayersCount; // نسبة القطيع
+
+                    let combinedDensity = moneyRatio + crowdRatio; // مقياس من 0 إلى 2 تقريباً
+
+                    if (combinedDensity > 0.6) {
+                        // 🔴 عقاب القطيع والحيتان (أموال كثيرة أو لاعبين كثر متجمعين هنا)
+                        w = w * (0.3 + (this.getSecureRandom() * 0.2)); 
+                        statusMsg = "تشتيت القطيع نشط";
+                        logType = "chaos";
+                    } 
+                    else if (combinedDensity === 0) {
+                        // 🔴 عقاب المتسللين (الخانات الفارغة تماماً التي ينتظرها الأذكياء)
+                        // لا نجعلها 0 لكي لا تختفي، لكن نقلل احتمالية مجيئها لكي لا تكون الملاذ الآمن.
+                        w = w * 0.6; 
+                    }
+                    else if (combinedDensity > 0 && combinedDensity <= 0.3) {
+                        // 🟢 المنطقة العمياء (لاعبون صغار متفرقون، لا يشكلون قطيعاً ولا متسللين واضحين)
+                        // السيرفر يربح من القطيع، ويعطي فوزاً عشوائياً هنا للتمويه!
+                        w = w * 1.5; 
+                    }
+                }
+
+                // 3. إضافة عامل الفوضى العشوائي (Chaos Factor) 
+                // هذا يضمن أن الرياضيات السابقة لا تخلق نمطاً ثابتاً أبداً. اللعبة مجنونة تماماً ولا يمكن توقعها.
+                let chaosMultiplier = 0.75 + (this.getSecureRandom() * 0.5); // ضرب في رقم بين 0.75 و 1.25
+                w = w * chaosMultiplier;
+
+                w = Math.max(1, Math.floor(w)); 
+                dynamicWeights.push({ index: item.index, weight: w });
+                totalWeight += w;
+            }
+
+            document.getElementById("ai-status").innerText = statusMsg;
+
+            // 4. اختيار الفائز بالروليت الكمي
+            let randomPoint = this.getSecureRandom() * totalWeight;
+            let currentSum = 0;
+            let winnerIndex = 0;
+
+            for (let dw of dynamicWeights) {
+                currentSum += dw.weight;
+                if (randomPoint < currentSum) {
+                    winnerIndex = dw.index;
+                    break;
+                }
+            }
+
+            let winnerItem = itemsData[winnerIndex];
+            let entropyHash = Math.random().toString(16).substring(2, 6).toUpperCase();
+            let mainLogMsg = `[دورة ${entropyHash}] الفائز: ${winnerItem.country}. النتيجة: عشوائية عكس التوقعات (مصير حتمي).`;
+            
+            return { winnerIndex: winnerIndex, id: winnerItem.id, mult: winnerItem.mult, logs: [mainLogMsg], logType: logType };
+        }
+    };
+    
+    // ============================================================================    
+    // إدارة النظام وقاعدة البيانات
+    // ============================================================================    
+    
+    let state = {    
+        serverTimeOffset: 0, lastProcessedRound: -1, currentActiveRound: -1,    
+        usersData: {}, playersData: {}, currentRoundPlayers: {},    
+        cycleData: { rounds: 0, totalBets: 0, totalPaid: 0 },
+        dbSynced: false    
+    };    
+    
+    function log(msg, type = 'sys') {    
+        const c = document.getElementById("console-log");    
+        const t = new Date().toLocaleTimeString('ar-IQ', { hour12: false, hour: '2-digit', minute:'2-digit', second:'2-digit' });    
+        const div = document.createElement("div"); div.className = "log-entry";    
+        div.innerHTML = `<span class="log-time">[${t}]</span> <span class="log-${type}">${msg}</span>`;    
+        c.appendChild(div);    
+        while(c.childNodes.length > 60) c.removeChild(c.firstChild);    
+        c.scrollTop = c.scrollHeight;    
+    }    
+    
+    function formatUSD(coins) { return "$" + (coins * COIN_TO_USD).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits:2}); }    
+    
+    async function initSystem() {    
+        try {    
+            onValue(ref(db, ".info/serverTimeOffset"), s => { state.serverTimeOffset = s.val() || 0; });    
+                
+            onValue(ref(db, "users"), s => { state.usersData = s.val() || {}; renderUI(); });    
+            onValue(ref(db, "players"), s => { state.playersData = s.val() || {}; renderUI(); });    
+                
+            onValue(ref(db, "server_stats/cycle_data"), s => {    
+                let data = s.val() || { rounds: 0, totalBets: 0, totalPaid: 0 };
+                state.cycleData = data;
+                
+                let cycleNet = state.cycleData.totalBets - state.cycleData.totalPaid;
+                let netClass = cycleNet >= 0 ? "text-green" : "text-red";
+                
+                document.getElementById("cycle-rounds").innerText = state.cycleData.rounds.toLocaleString();
+                document.getElementById("cycle-profit").innerHTML = `<span class="usd-val" style="border:none; background:transparent;">${formatUSD(cycleNet)}</span> <span class="${netClass}">${Math.floor(cycleNet).toLocaleString()}</span>`;
+                
+                state.dbSynced = true;    
+                renderUI();    
+            }); 
+    
+            startEngine();    
+        } catch (error) { setTimeout(initSystem, 3000); }    
+    }    
+    
+    function renderUI() {    
+        let rowsHtml = [];     
+        for (let uid in state.usersData) {    
+            let u = state.usersData[uid];    
+            let realBalance = (u.deviceId && state.playersData[u.deviceId]) ? (state.playersData[u.deviceId].balance || 0) : 0;    
+            let stats = u.stats || { totalBet: 0, totalWon: 0 };    
+            let netDrain = stats.totalWon - stats.totalBet; 
+                
+            if(u.deviceId) {    
+                let drainClass = netDrain > 0 ? "text-green" : (netDrain < 0 ? "text-red" : "text-muted");     
+                rowsHtml.push(`<tr>    
+                    <td>${u.name || 'مجهول'} <br><small style="color:#2d3748;font-size:9px;">${u.deviceId}</small></td>    
+                    <td style="color:var(--gold);"><span class="usd-val">${formatUSD(realBalance)}</span> ${Math.floor(realBalance).toLocaleString()}</td>    
+                    <td class="${drainClass}" dir="ltr">${netDrain > 0 ? '+' : ''}${Math.floor(netDrain).toLocaleString()}</td>    
+                </tr>`);    
+            }    
+        }    
+        document.getElementById("players-table-body").innerHTML = rowsHtml.join('');    
+    }    
+    
+    let currentRoundListener = null;    
+    function listenToCurrentRoundBets(roundId) {    
+        if (currentRoundListener) currentRoundListener();     
+        currentRoundListener = onValue(ref(db, `rounds_v28/${roundId}/players`), snap => {    
+            state.currentRoundPlayers = snap.val() || {};    
+            let tPool = 0, playerCount = 0, betsHTML = '';    
+
+            for(let d in state.currentRoundPlayers) {    
+                playerCount++; let pBets = state.currentRoundPlayers[d].bets;    
+                let uid = Object.keys(state.usersData).find(k => state.usersData[k].deviceId === d);    
+                let pName = uid ? (state.usersData[uid].name || 'مجهول') : 'مجهول';    
+                    
+                let row = `<div style="margin-bottom:8px; border-bottom:1px solid #06080c; padding-bottom:5px;"><strong style="color:var(--text-muted); font-size:11px;">${pName}:</strong> `;    
+                for(let i=0;i<8;i++) {     
+                    if(pBets[i] > 0) {     
+                        tPool += pBets[i]; 
+                        row += `<span style="margin-left:8px; font-size:10px; display:inline-block; color:#718096;">${itemsData[i].country}: <span style="color:var(--gold);">${pBets[i].toLocaleString()}</span></span>`;     
+                    }     
+                }    
+                betsHTML += row + `</div>`;    
+            }    
+            if(playerCount === 0) betsHTML = '<div style="color:#2d3748; text-align:center; font-size:11px; padding:20px;">الطاولة فارغة.. محرك المحاكاة في وضع الاستعداد.</div>';    
+                
+            document.getElementById("live-bets-container").innerHTML = `<div style="background:#000; padding:12px; border-radius:5px; margin-bottom:10px; text-align:center; border:1px solid var(--border); box-shadow: inset 0 0 10px rgba(0,0,0,0.8);"><div style="color:#718096; font-size:13px;">إجمالي المراهنات: <span style="color:var(--cyan); font-weight:900; font-size:16px; text-shadow: 0 0 5px var(--cyan);">${tPool.toLocaleString()}</span> <span style="font-size:11px; color:var(--text-muted)">(${formatUSD(tPool)})</span></div></div>${betsHTML}`;    
+                
+            document.getElementById("live-total-bet").innerText = tPool.toLocaleString();
+        });    
+    }    
+    
+    async function processRoundFinances(globalRoundId, winnerIdx, roundPlayersSnapshot) {    
+        let winnerItem = itemsData[winnerIdx];    
+        let updates = {};     
+        let systemWonThisRound = 0; let systemPaidThisRound = 0;    
+    
+        for (let devId in roundPlayersSnapshot) {    
+            let pData = roundPlayersSnapshot[devId]; if (!pData || !pData.bets) continue;    
+            let currentBal = state.playersData[devId] ? (state.playersData[devId].balance || 0) : 0;    
+                
+            let totalBetAmt = 0;     
+            for(let idx in pData.bets) totalBetAmt += pData.bets[idx];    
+                
+            let wonAmount = (pData.bets[winnerIdx] || 0) * winnerItem.mult;    
+                
+            systemWonThisRound += totalBetAmt;     
+            systemPaidThisRound += wonAmount;    
+                
+            currentBal += wonAmount;     
+            updates[`players/${devId}/balance`] = currentBal;    
+    
+            let uid = Object.keys(state.usersData).find(k => state.usersData[k].deviceId === devId);    
+            if (uid) {
+                updates[`users/${uid}/balance`] = currentBal;    
+                let u = state.usersData[uid], pStats = u.stats || { roundsPlayed: 0, totalBet: 0, totalWon: 0 };    
+                pStats.roundsPlayed += 1; pStats.totalBet += totalBetAmt; pStats.totalWon += wonAmount;    
+                updates[`users/${uid}/stats`] = pStats;    
+            }    
+        }    
+            
+        state.cycleData.rounds += 1;
+        state.cycleData.totalBets += systemWonThisRound;
+        state.cycleData.totalPaid += systemPaidThisRound;
+
+        updates['server_stats/cycle_data'] = state.cycleData;
+            
+        let roundMargin = systemWonThisRound - systemPaidThisRound;
+        if (systemWonThisRound > 0 || systemPaidThisRound > 0) {    
+            log(`[محاكاة مالية] السحب: ${systemWonThisRound} | التوزيع: ${systemPaidThisRound}`, roundMargin >= 0 ? "strike" : "chaos");    
+        }    
+    
+        try {     
+            if (Object.keys(updates).length > 0) await update(ref(db), updates);     
+        }     
+        catch (e) { log(`[CRITICAL] فشل اتصال المحاكاة: ${e.message}`, "kill"); }    
+    }    
+    
+    function startEngine() {    
+        setInterval(async () => {    
+            if(!state.dbSynced) return;     
+    
+            let n = Math.floor(((Date.now() + state.serverTimeOffset) - new Date(Date.UTC(2024, 0, 1, 22, 0, 0)).getTime()) / 1000);    
+            let globalRoundId = Math.floor(n / 42), elapsed = n % 42;    
+                
+            document.getElementById("round-id").innerText = globalRoundId;     
+            document.getElementById("round-time").innerText = elapsed;    
+                
+            if (globalRoundId !== state.currentActiveRound) {     
+                state.currentActiveRound = globalRoundId;     
+                listenToCurrentRoundBets(globalRoundId);     
+            }    
+    
+            if (elapsed === 30 && state.lastProcessedRound !== globalRoundId) {    
+                state.lastProcessedRound = globalRoundId;    
+                    
+                let outcome = window.QUANTUM_ENGINE.processRound(state.currentRoundPlayers);
+                
+                try {    
+                    const historyRef = ref(db, `rounds_v28_history/${globalRoundId}`);    
+                    const transactionResult = await runTransaction(historyRef, (currentData) => {    
+                        if (currentData && currentData.winner) return;   
+                        return { winner: outcome.id, timestamp: Date.now() };    
+                    });    
+    
+                    if (transactionResult.committed) {    
+                        outcome.logs.forEach(l => log(l, outcome.logType));    
+                        processRoundFinances(globalRoundId, outcome.winnerIndex, state.currentRoundPlayers);    
+                    }    
+                        
+                } catch (e) {     
+                    log(`[ERROR] تداخل بيانات: ${e.message}`, 'kill');    
+                    state.lastProcessedRound = -1;    
+                }    
+            }    
+        }, 100);     
+    }    
+        
+    window.onload = () => { initSystem(); };    
+</script>  
+</body>    
+</html>
